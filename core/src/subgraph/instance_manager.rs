@@ -200,6 +200,10 @@ where
                         .start_subgraph_inner::<graph_chain_near::Chain>(logger, loc, manifest)
                         .await
                 }
+
+                _ => {
+                    Ok(())
+                }
             }
         };
         // Perform the actual work of starting the subgraph in a separate

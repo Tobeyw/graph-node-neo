@@ -239,6 +239,26 @@ where
                         unvalidated_subgraph_manifest,
                     )?
                 }
+
+                //waiting neo
+                _ => {
+                    let unvalidated_subgraph_manifest =
+                        UnvalidatedSubgraphManifest::<graph_chain_near::Chain>::resolve(
+                            deployment_hash,
+                            raw,
+                            self.link_resolver.clone(),
+                            &self.logger,
+                            MAX_SPEC_VERSION.clone(),
+                        )
+                        .await?;
+
+                    validate_and_extract_features(
+                        &self.subgraph_store,
+                        unvalidated_subgraph_manifest,
+                    )?
+                    
+                }
+
             }
         };
 
