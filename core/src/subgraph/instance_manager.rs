@@ -200,6 +200,12 @@ where
                         .start_subgraph_inner::<graph_chain_near::Chain>(logger, loc, manifest)
                         .await
                 }
+                // fixed Neo
+                BlockchainKind::Neo=> {
+                    instance_manager
+                        .start_subgraph_inner::<graph_chain_neo::Chain>(logger, loc, manifest)
+                        .await
+                }
 
                 _ => {
                     Ok(())

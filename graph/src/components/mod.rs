@@ -41,6 +41,9 @@ pub mod subgraph;
 /// Components dealing with Ethereum.
 pub mod ethereum;
 
+/// Components dealing with Neo.
+pub mod neo;
+
 /// Components dealing with processing GraphQL.
 pub mod graphql;
 

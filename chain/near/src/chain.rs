@@ -143,8 +143,7 @@ impl Blockchain for Chain {
         Ok(Box::new(FirehoseBlockStream::new(
             firehose_endpoint,
             firehose_cursor,
-            firehose_mapper,
-            deployment.hash,
+            firehose_mapper,        
             adapter,
             filter,
             start_blocks,
