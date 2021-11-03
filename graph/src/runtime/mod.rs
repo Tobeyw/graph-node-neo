@@ -238,6 +238,30 @@ pub enum IndexForAscTypeId {
     NearChunkHeader = 84,
     NearBlock = 85,
     NearReceiptWithOutcome = 86,
+
+    // Neo Type IDs
+    NeoBlock = 100,
+    NeoWitness = 101,
+    NeoSigner = 102,
+    NeoBlockHeader = 103,
+    NeoTransaction = 104,
+    NeoTransactionAttribute = 105,
+    NeoEnumTransactionAttributeType = 106,
+    NeoArrayTransaction = 107,
+    NeoArrayWitness = 108,
+    NeoArrayTransactionAttribute = 109,
+    NeoArrayAddress = 110,
+    NeoArrayPublicKey = 111,
+    NeoArraySigner = 112,
+    NeoEnumTriggerType = 113,
+    NeoEnumVMState = 114,
+    NeoEnumStackItem = 115,
+    NeoExcution = 116,
+    NeoStackItem = 117,
+    NeoRpcNotifyEventArgs = 118,
+    NeoArrayRpcNotifyEventArgs = 119,
+    NeoArrayStackItem = 120,
+
 }
 
 impl ToAscObj<u32> for IndexForAscTypeId {
