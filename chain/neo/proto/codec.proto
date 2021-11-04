@@ -1,30 +1,30 @@
 syntax = "proto3";
 package sf.neo.codec.v1;
 
-message Block {
-  BlockHeader header=1;
-  repeated Transaction tx=2;
+message NeoBlock {
+  NeoBlockHeader header=1;
+  repeated NeoTransaction tx=2;
 }
 
-message BlockHeader {
+message NeoBlockHeader {
   CryptoHash hash = 1;
   uint64 size = 2;
   uint64 version =3;
   CryptoHash previous_block_hash = 4;
   CryptoHash merkrle_root = 5;
   uint64 time = 6;
-  uint64 nounce = 7;   //
+  uint64 nonce = 7;   
   uint64 primary = 8;
-  repeated Witness witness =9;
+  repeated Witness witnesses =9;
   Address nextconsensus =10;
   CryptoHash nextblockhash = 11;
   uint64 confirmations = 12;
 }
-message Transaction {
+message NeoTransaction {
   CryptoHash hash=1;
   uint64 size = 2;
   uint64 version =3;
-  uint64 nounce = 4;  //
+  uint64 nonce = 4;   
   Address sender = 5;
   uint64 sysfee = 6;
   uint64 netfee = 7;
@@ -32,7 +32,7 @@ message Transaction {
   repeated Signer signers = 9;
   repeated TransactionAttribute attributes = 10;
   bytes script = 11;
-  repeated Witness witness =12;
+  repeated Witness witnesses =12;
   uint64 confirmations = 13;
   uint64 blocktime = 14;
   CryptoHash blockhash = 15;
@@ -118,7 +118,7 @@ message Account{
  message Execution{
    TriggerType tigger = 1;
    VMState vmstate = 2;
-   uint64 gasc_consued = 3;
+   uint64 gas_consumed = 3;
    string exception_message = 4;
    repeated StackItem  stack_item= 5;
    repeated RpcNotifyEventArgs notify_eventArgs =6;

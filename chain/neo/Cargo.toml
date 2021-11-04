@@ -1,5 +1,5 @@
 [package]
-name = "graph-chain-near"
+name = "graph-chain-neo"
 version = "0.24.1"
 edition = "2018"
 
@@ -9,6 +9,7 @@ tonic-build = "0.5.1"
 [dependencies]
 base64 = "0.13"
 graph = { path = "../../graph" }
+mockall = "0.9.1"
 prost = "0.8.0"
 prost-types = "0.8.0"
 serde = "1.0"

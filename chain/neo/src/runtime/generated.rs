@@ -5,10 +5,17 @@ use graph::semver::Version;
 use graph_runtime_derive::AscType;
 use graph_runtime_wasm::asc_abi::class::{Array, AscAddress, AscEnum, AscString, Uint8Array};
 
+use graph::runtime::{asc_new, AscHeap, AscPtr, DeterministicHostError, ToAscObj,FromAscObj};
+use graph_runtime_wasm::asc_abi::class::{Array, AscEnum, EnumPayload, Uint8Array};
+
+
+use crate::codec::NeoBlockHeader;
+use crate::codec::NeoTransaction;
+
 pub(crate) type AscCryptoHash = Uint8Array;
 pub(crate) type AscAccount = Uint8Array;
 pub(crate) type AscPublicKey = Uint8Array;
-pub(crate) type AscBigInteger = Uint8Array;
+pub(crate) type AscBigInteger = u64;
 
 #[repr(C)]
 #[derive(AscType)]
@@ -23,9 +30,10 @@ pub(crate) struct AscNeoBlockHeader {
     pub primary: AscPtr<AscBigInteger>,
     pub witnesses:  AscPtr<AscWitnessArray>,
     pub next_consensus: AscPtr<AscAddress>,
-    pub nex_block_hash: AscPtr<AscCryptoHash>,
+    pub next_block_hash: AscPtr<AscCryptoHash>,
     pub confirmation: AscPtr<AscCryptoHash>,   
 }
+
 
 impl AscIndexId for AscNeoBlockHeader {
     const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoBlockHeader;
@@ -37,7 +45,7 @@ pub(crate) struct AscNeoTransaction{
     pub hash: AscPtr<AscCryptoHash>,
     pub size: AscPtr<AscBigInteger>,
     pub version: AscPtr<AscBigInteger>,
-    pub nunce: AscPtr<AscBigInteger>,
+    pub nonce: AscPtr<AscBigInteger>,
     pub sender: AscPtr<AscAddress>,
     pub sysfee: AscPtr<AscBigInteger>,
     pub netfee: AscPtr<AscBigInteger>,
@@ -51,6 +59,7 @@ pub(crate) struct AscNeoTransaction{
     pub blockhash:AscPtr<AscCryptoHash>,
 }
 
+ 
 impl AscIndexId for AscNeoTransaction {
     const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoTransaction;
 }
@@ -59,7 +68,7 @@ impl AscIndexId for AscNeoTransaction {
 #[derive(AscType)]
 pub(crate) struct AscNeoBlock{
     pub header: AscPtr<AscNeoBlockHeader>,
-    pub size: AscPtr<AscNeoTransaction>,  
+    pub tx: AscPtr<AscNeoTransaction>,  
 }
 
 impl AscIndexId for AscNeoBlock {
