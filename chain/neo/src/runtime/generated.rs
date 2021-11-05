@@ -3,35 +3,30 @@ use graph::runtime::{
 };
 use graph::semver::Version;
 use graph_runtime_derive::AscType;
-use graph_runtime_wasm::asc_abi::class::{Array, AscAddress, AscEnum, AscString, Uint8Array};
+use graph_runtime_wasm::asc_abi::class::{Array, AscEnum, AscString, Uint8Array};
 
-use graph::runtime::{asc_new, AscHeap, AscPtr, DeterministicHostError, ToAscObj,FromAscObj};
-use graph_runtime_wasm::asc_abi::class::{Array, AscEnum, EnumPayload, Uint8Array};
-
-
-use crate::codec::NeoBlockHeader;
-use crate::codec::NeoTransaction;
 
 pub(crate) type AscCryptoHash = Uint8Array;
 pub(crate) type AscAccount = Uint8Array;
 pub(crate) type AscPublicKey = Uint8Array;
+pub(crate) type AscAddress = Uint8Array;
 pub(crate) type AscBigInteger = u64;
 
 #[repr(C)]
 #[derive(AscType)]
 pub(crate) struct AscNeoBlockHeader {
     pub hash: AscPtr<AscCryptoHash>,
-    pub size: AscPtr<AscBigInteger>,
-    pub version: AscPtr<AscBigInteger>,
+    pub size: AscBigInteger,
+    pub version:AscBigInteger,
     pub previous_block_hash: AscPtr<AscCryptoHash>,
     pub merkle_root: AscPtr<AscCryptoHash>,
-    pub time:  AscPtr<AscBigInteger>,
-    pub nonce: AscPtr<AscBigInteger>,
-    pub primary: AscPtr<AscBigInteger>,
+    pub time:  AscBigInteger,
+    pub nonce: AscBigInteger,
+    pub primary: AscBigInteger,
     pub witnesses:  AscPtr<AscWitnessArray>,
     pub next_consensus: AscPtr<AscAddress>,
     pub next_block_hash: AscPtr<AscCryptoHash>,
-    pub confirmation: AscPtr<AscCryptoHash>,   
+    pub confirmation: AscBigInteger,   
 }
 
 
@@ -43,19 +38,19 @@ impl AscIndexId for AscNeoBlockHeader {
 #[derive(AscType)]
 pub(crate) struct AscNeoTransaction{
     pub hash: AscPtr<AscCryptoHash>,
-    pub size: AscPtr<AscBigInteger>,
-    pub version: AscPtr<AscBigInteger>,
-    pub nonce: AscPtr<AscBigInteger>,
+    pub size:  AscBigInteger,
+    pub version: AscBigInteger,
+    pub nonce: AscBigInteger,
     pub sender: AscPtr<AscAddress>,
-    pub sysfee: AscPtr<AscBigInteger>,
-    pub netfee: AscPtr<AscBigInteger>,
-    pub vailduntilblock: AscPtr<AscBigInteger>,
+    pub sysfee: AscPtr<AscCryptoHash>,
+    pub netfee: AscPtr<AscCryptoHash>,
+    pub vailduntilblock:  AscBigInteger,
     pub signers: AscPtr<AscSignerArray>,
     pub attributes: AscPtr<AscTransactionAttributeArray>,
     pub script:AscPtr<Uint8Array>,
     pub witnesses:AscPtr<AscWitnessArray>,
-    pub confirmation:AscPtr<AscBigInteger>,
-    pub blocktime:AscPtr<AscBigInteger>,
+    pub confirmation: AscBigInteger,
+    pub blocktime:AscBigInteger,
     pub blockhash:AscPtr<AscCryptoHash>,
 }
 
@@ -89,12 +84,12 @@ impl AscIndexId for AscWitness {
 #[repr(C)]
 #[derive(AscType)]
 pub(crate) struct AscSigner{
-    pub max_subitems: AscPtr<AscBigInteger>,
+    pub max_subitems: AscBigInteger,
     pub account: AscPtr<AscAccount>,
     pub scope: AscPtr<AscWitnessScope>,
     pub allowed_contracts: AscPtr<AscAddressArray>,
     pub allow_groups: AscPtr<AscPublicKeyArray>,
-    pub size: AscPtr<AscBigInteger>, 
+    pub size: AscBigInteger, 
 }
 
 impl AscIndexId for AscSigner {
@@ -125,7 +120,7 @@ impl Default for AscWitnessScope {
 pub(crate) struct AscTransactionAttribute{
     pub atype: AscPtr<AscTransactionAttributeTypeEnum>,
     pub allow_multiple: AscPtr<bool>,
-    pub size: AscPtr<AscBigInteger>,  
+    pub size: AscBigInteger,  
 }
 
 impl AscIndexId for AscTransactionAttribute {
@@ -284,7 +279,7 @@ impl AscIndexId for AscStackItemTypeEnum {
 pub(crate) struct AscExcution{
     pub trigger: AscPtr<AscTriggerTypeEnum>,
     pub vmstate: AscPtr<AscVMStateEnum>,
-    pub gas_consumsed: AscPtr<AscBigInteger>,  
+    pub gas_consumsed: AscBigInteger,  
     pub exception_message: AscPtr<AscString>, 
     pub stack_item : AscPtr<AscStackItemArray>,
     pub notifify_eventsArgs:AscPtr<AscRpcNotifyEventArgsArray>,
@@ -301,7 +296,7 @@ pub(crate) struct AscStackItem{
     pub stack_false: AscPtr<AscStackItem>,
     pub stack_true: AscPtr<AscStackItem>,  
     pub stack_type: AscPtr<AscStackItemTypeEnum>, 
-    pub is_null : AscPtr<bool>,
+    pub is_null : bool,
 }
 
 impl AscIndexId for AscStackItem {
@@ -312,7 +307,7 @@ impl AscIndexId for AscStackItem {
 #[derive(AscType)]
 pub(crate) struct AscRpcNotifyEventArgs{
     pub contract: AscPtr<AscAddress>,
-    pub event_name: AscPtr<AscString>,
+    pub event_name: AscString,
     pub state: AscPtr<AscStackItem>,  
     
 }

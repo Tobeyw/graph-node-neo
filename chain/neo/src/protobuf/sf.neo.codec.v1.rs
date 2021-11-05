@@ -1,12 +1,12 @@
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct Block {
+pub struct NeoBlock {
     #[prost(message, optional, tag = "1")]
-    pub header: ::core::option::Option<BlockHeader>,
+    pub header: ::core::option::Option<NeoBlockHeader>,
     #[prost(message, repeated, tag = "2")]
-    pub tx: ::prost::alloc::vec::Vec<Transaction>,
+    pub tx: ::prost::alloc::vec::Vec<NeoTransaction>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct BlockHeader {
+pub struct NeoBlockHeader {
     #[prost(message, optional, tag = "1")]
     pub hash: ::core::option::Option<CryptoHash>,
     #[prost(uint64, tag = "2")]
@@ -19,13 +19,12 @@ pub struct BlockHeader {
     pub merkrle_root: ::core::option::Option<CryptoHash>,
     #[prost(uint64, tag = "6")]
     pub time: u64,
-    ///
     #[prost(uint64, tag = "7")]
-    pub nounce: u64,
+    pub nonce: u64,
     #[prost(uint64, tag = "8")]
     pub primary: u64,
     #[prost(message, repeated, tag = "9")]
-    pub witness: ::prost::alloc::vec::Vec<Witness>,
+    pub witnesses: ::prost::alloc::vec::Vec<Witness>,
     #[prost(message, optional, tag = "10")]
     pub nextconsensus: ::core::option::Option<Address>,
     #[prost(message, optional, tag = "11")]
@@ -34,22 +33,21 @@ pub struct BlockHeader {
     pub confirmations: u64,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct Transaction {
+pub struct NeoTransaction {
     #[prost(message, optional, tag = "1")]
     pub hash: ::core::option::Option<CryptoHash>,
     #[prost(uint64, tag = "2")]
     pub size: u64,
     #[prost(uint64, tag = "3")]
     pub version: u64,
-    ///
     #[prost(uint64, tag = "4")]
-    pub nounce: u64,
+    pub nonce: u64,
     #[prost(message, optional, tag = "5")]
     pub sender: ::core::option::Option<Address>,
-    #[prost(uint64, tag = "6")]
-    pub sysfee: u64,
-    #[prost(uint64, tag = "7")]
-    pub netfee: u64,
+    #[prost(bytes = "vec", tag = "6")]
+    pub sysfee: ::prost::alloc::vec::Vec<u8>,
+    #[prost(bytes = "vec", tag = "7")]
+    pub netfee: ::prost::alloc::vec::Vec<u8>,
     #[prost(uint64, tag = "8")]
     pub validuntilblock: u64,
     #[prost(message, repeated, tag = "9")]
@@ -59,7 +57,7 @@ pub struct Transaction {
     #[prost(bytes = "vec", tag = "11")]
     pub script: ::prost::alloc::vec::Vec<u8>,
     #[prost(message, repeated, tag = "12")]
-    pub witness: ::prost::alloc::vec::Vec<Witness>,
+    pub witnesses: ::prost::alloc::vec::Vec<Witness>,
     #[prost(uint64, tag = "13")]
     pub confirmations: u64,
     #[prost(uint64, tag = "14")]
@@ -165,7 +163,7 @@ pub struct Execution {
     #[prost(enumeration = "VmState", tag = "2")]
     pub vmstate: i32,
     #[prost(uint64, tag = "3")]
-    pub gasc_consued: u64,
+    pub gas_consumed: u64,
     #[prost(string, tag = "4")]
     pub exception_message: ::prost::alloc::string::String,
     #[prost(message, repeated, tag = "5")]
