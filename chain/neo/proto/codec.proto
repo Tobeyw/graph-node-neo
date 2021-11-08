@@ -26,8 +26,8 @@ message NeoTransaction {
   uint64 version =3;
   uint64 nonce = 4;   
   Address sender = 5;
-  uint64 sysfee = 6;
-  uint64 netfee = 7;
+  string sysfee = 6;
+  string netfee = 7;
   uint64 validuntilblock = 8;
   repeated Signer signers = 9;
   repeated TransactionAttribute attributes = 10;
@@ -52,14 +52,22 @@ message Signer{
   uint64 size = 6;   
 }
 
-enum WitnessScope{ 
-    CustomContracts = 0;   
-    CalledByEntry = 1;
-    CustomGroups = 2;
-    Global = 3;
-    Null = 4; 
-}  
+message WitnessScope{
+  oneof scope{
+    CustomContracts custom_contracts = 1;   
+    CalledByEntry called_byEntry = 2;
+    CustomGroups custom_groups = 3;
+    Global global = 4;
+    Null null = 5; 
+  }
+}
+ message CustomContracts{}
+ message CalledByEntry{}
+ message CustomGroups{}
+ message Global{}
+ message Null{}
 
+   
 message TransactionAttribute{
   TransactionAttributeType type = 1;
   bool allowMultiple = 2;
@@ -87,19 +95,31 @@ message OracleResponse{
   bool allow_multiple = 6;
   uint64 size = 7;
 }
-
-enum OracleResponseCode{ 
-    Success = 0;
-    ProtocolNotSupported = 1;
-    ConsensusUnreachable  = 2;
-    NotFound = 3;
-    Timeout = 4;
-    Forbidden = 5;
-    ResponseTooLarge = 6;
-    InsufficientFunds = 7;
-    ContentTypeNotSupported  = 8;
-    Error = 9; 
-}  
+message OracleResponseCode{
+  oneof code{
+    Success success= 10;
+    ProtocolNotSupported protocol_notSupported= 1;
+    ConsensusUnreachable  consensus_unreachable= 2;
+    NotFound notFound = 3;
+    Timeout timeout= 4;
+    Forbidden forbidden= 5;
+    ResponseTooLarge response_tooLarge= 6;
+    InsufficientFunds insufficientFunds= 7;
+    ContentTypeNotSupported contentType_NotSupported = 8;
+    Error error= 9; 
+  }
+}
+ 
+message Success{}
+message ProtocolNotSupported{}
+message ConsensusUnreachable{}
+message NotFound{}
+message Timeout{}
+message Forbidden{}
+message ResponseTooLarge{}
+message InsufficientFunds{}
+message ContentTypeNotSupported{}
+message Error{}
  
 
 message PublicKey {
@@ -124,21 +144,35 @@ message Account{
    repeated RpcNotifyEventArgs notify_eventArgs =6;
  }
 
-enum TriggerType{  
-    OnPersist = 0;
-    PostPersist  = 1; 
-    Verification = 2;
-    Application = 3;
-    System  = 4;
-    All = 5; 
-} 
-
-enum VMState{ 
-    None = 0;
-    HALT = 1;
-    FAULT = 2;
-    BREAK = 4;  
+ message TriggerType{
+   oneof type{
+    OnPersist on_persist= 6;
+    PostPersist post_persist= 1; 
+    Verification verification = 2;
+    Application application= 3;
+    System system= 4;
+    All all= 5; 
+   }
+ }
+ message OnPersist{}
+ message PostPersist{}
+ message Verification{}
+ message Application{}
+ message System{}
+ message All{}
+ 
+message VMState{
+  oneof state{
+    NONE none= 5;
+    HALT halt= 1;
+    FAULT fault= 2;
+    BREAK break= 4;  
+  }
 }
+message NONE{}
+message HALT{}
+message FAULT{}
+message BREAK{}
 
 message StackItem{
   StackItem null = 1;
@@ -147,18 +181,31 @@ message StackItem{
   StackItemType type = 4;
   bool is_null= 5;
 }
-enum StackItemType{  
-    Any = 0;
-    Pointer  = 1;
-    Boolean = 2;
-    Integer  = 3;
-    ByteString  = 4;
-    Buffer  = 5;  
-    Array = 6; 
-    Struct = 7;
-    Map = 8;
-    InteropInterface = 9;    
+
+message StackItemType{
+    oneof stack_type{
+      ANY any=10;
+      Pointer  pointer= 1;
+      Boolean bool= 2;
+      Integer  int= 3;
+      ByteString  byteString= 4;
+      Buffer  buffer= 5;  
+      Array array= 6; 
+      Struct struct= 7;
+      Map map= 8;
+      InteropInterface interopInterface= 9;   
+    }
 }
+message ANY{}
+message Pointer{}
+message Boolean{}
+message Integer{}
+message ByteString{}
+message Buffer{}
+message Array{}
+message Struct{}
+message Map{}
+message InteropInterface{}
 
 message RpcNotifyEventArgs{
   Address contract = 1;
