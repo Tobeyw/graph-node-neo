@@ -42,8 +42,8 @@ pub(crate) struct AscNeoTransaction{
     pub version: AscBigInteger,
     pub nonce: AscBigInteger,
     pub sender: AscPtr<AscAddress>,
-    pub sysfee: AscPtr<AscCryptoHash>,
-    pub netfee: AscPtr<AscCryptoHash>,
+    pub sysfee: AscPtr<AscString>,
+    pub netfee: AscPtr<AscString>,
     pub vailduntilblock:  AscBigInteger,
     pub signers: AscPtr<AscSignerArray>,
     pub attributes: AscPtr<AscTransactionAttributeArray>,
@@ -63,7 +63,7 @@ impl AscIndexId for AscNeoTransaction {
 #[derive(AscType)]
 pub(crate) struct AscNeoBlock{
     pub header: AscPtr<AscNeoBlockHeader>,
-    pub tx: AscPtr<AscNeoTransaction>,  
+    pub tx: AscPtr<AscTransactionArray>,  
 }
 
 impl AscIndexId for AscNeoBlock {
@@ -86,7 +86,7 @@ impl AscIndexId for AscWitness {
 pub(crate) struct AscSigner{
     pub max_subitems: AscBigInteger,
     pub account: AscPtr<AscAccount>,
-    pub scope: AscPtr<AscWitnessScope>,
+    pub scope: AscPtr<AscWitnessScopeEnum>,
     pub allowed_contracts: AscPtr<AscAddressArray>,
     pub allow_groups: AscPtr<AscPublicKeyArray>,
     pub size: AscBigInteger, 
@@ -113,13 +113,72 @@ impl Default for AscWitnessScope {
         Self::CalledByEntry
     }
 }
+pub struct AscWitnessScopeEnum(pub(crate) AscEnum<AscWitnessScope>);
+
+impl AscType for AscWitnessScopeEnum {
+    fn to_asc_bytes(&self) -> Result<Vec<u8>, DeterministicHostError> {
+        self.0.to_asc_bytes()
+    }
+
+    fn from_asc_bytes(
+        asc_obj: &[u8],
+        api_version: &Version,
+    ) -> Result<Self, DeterministicHostError> {
+        Ok(Self(AscEnum::from_asc_bytes(asc_obj, api_version)?))
+    }
+}
+
+impl AscIndexId for AscWitnessScopeEnum {
+    const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoEnumWitnessScope;
+}
+
+#[repr(C)]
+#[derive(AscType)]
+pub(crate) struct AscCustomContracts {}
+
+impl AscIndexId for AscCustomContracts {
+    const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoCustomContracts;
+}
+
+#[repr(C)]
+#[derive(AscType)]
+pub(crate) struct AscCalledByEntry {}
+
+impl AscIndexId for AscCalledByEntry {
+    const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoCalledByEntry;
+}
+
+#[repr(C)]
+#[derive(AscType)]
+pub(crate) struct AscCustomGroups {}
+
+impl AscIndexId for AscCustomGroups {
+    const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoCustomGroups;
+}
+
+#[repr(C)]
+#[derive(AscType)]
+pub(crate) struct AscNull {}
+
+impl AscIndexId for AscNull {
+    const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoNull;
+}
+
+#[repr(C)]
+#[derive(AscType)]
+pub(crate) struct AscGlobal {}
+
+impl AscIndexId for AscGlobal {
+    const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoGlobal;
+}
+
 
 
 #[repr(C)]
 #[derive(AscType)]
 pub(crate) struct AscTransactionAttribute{
     pub atype: AscPtr<AscTransactionAttributeTypeEnum>,
-    pub allow_multiple: AscPtr<bool>,
+    pub allow_multiple:  bool,
     pub size: AscBigInteger,  
 }
 
@@ -140,6 +199,160 @@ impl Default for AscTransactionAttributeType {
     fn default() -> Self {
         Self::HighPriority
     }
+}
+#[repr(C)]
+#[derive(AscType)]
+pub(crate) struct AscHighPriority {
+    pub allow_multiple: bool,
+    pub transaction_attribute_type :AscPtr<AscTransactionAttributeTypeEnum>
+
+}
+
+impl AscIndexId for AscHighPriority {
+    const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoHighPriority;
+}
+
+#[repr(C)]
+#[derive(AscType)]
+pub(crate) struct AscOracleResponse {
+    pub max_result_size :u64,
+    pub fixed_script :AscPtr<Uint8Array>,
+    pub id :u64,
+    pub code :AscPtr<AscOracleResponseCodeEnum>,
+    pub result:AscPtr<Uint8Array>,
+    pub allow_multiple:bool,
+    pub size : u64
+}
+
+impl AscIndexId for AscOracleResponse {
+    const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoOracleResponse;
+}
+
+
+#[repr(u32)]
+#[derive(AscType, Copy, Clone)]
+pub(crate) enum AscOracleResponseCode {
+    Success,
+    ProtocolNotSupported,
+    ConsensusUnreachable,
+    NotFound,
+    Timeout,
+    Forbidden,
+    ResponseTooLarge,
+    InsufficientFunds,
+    ContentTypeNotSupported,
+    Error,
+}
+
+impl AscValue for AscOracleResponseCode {}
+
+impl Default for AscOracleResponseCode {
+    fn default() -> Self {
+        Self::Error
+    }
+}
+
+#[repr(C)]
+#[derive(AscType)]
+pub(crate) struct AscSuccess {}
+
+impl AscIndexId for AscSuccess{
+    const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoSuccess;
+}
+
+#[repr(C)]
+#[derive(AscType)]
+pub(crate) struct AscProtocolNotSupported {}
+
+impl AscIndexId for AscProtocolNotSupported{
+    const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoProtocolNotSupported;
+}
+
+#[repr(C)]
+#[derive(AscType)]
+pub(crate) struct AscConsensusUnreachable {}
+
+impl AscIndexId for AscConsensusUnreachable{
+    const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoConsensusUnreachable;
+}
+
+#[repr(C)]
+#[derive(AscType)]
+pub(crate) struct AscNotFound {}
+
+impl AscIndexId for AscNotFound{
+    const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoNotFound;
+}
+
+#[repr(C)]
+#[derive(AscType)]
+pub(crate) struct AscTimeout {}
+
+impl AscIndexId for AscTimeout{
+    const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoTimeout;
+}
+
+#[repr(C)]
+#[derive(AscType)]
+pub(crate) struct AscForbidden {}
+
+impl AscIndexId for AscForbidden{
+    const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoForbidden;
+}
+
+#[repr(C)]
+#[derive(AscType)]
+pub(crate) struct AscResponseTooLarge {}
+
+impl AscIndexId for AscResponseTooLarge{
+    const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoResponseTooLarge;
+}
+
+
+#[repr(C)]
+#[derive(AscType)]
+pub(crate) struct AscInsufficientFunds {}
+
+impl AscIndexId for AscInsufficientFunds{
+    const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoInsufficientFunds;
+}
+
+#[repr(C)]
+#[derive(AscType)]
+pub(crate) struct AscContentTypeNotSupported {}
+
+impl AscIndexId for AscContentTypeNotSupported{
+    const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoContentTypeNotSupported;
+}
+
+#[repr(C)]
+#[derive(AscType)]
+pub(crate) struct AscError {}
+
+impl AscIndexId for AscError{
+    const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoError;
+}
+
+
+
+
+pub struct AscOracleResponseCodeEnum(pub(crate) AscEnum<AscOracleResponseCode>);
+
+impl AscType for AscOracleResponseCodeEnum {
+    fn to_asc_bytes(&self) -> Result<Vec<u8>, DeterministicHostError> {
+        self.0.to_asc_bytes()
+    }
+
+    fn from_asc_bytes(
+        asc_obj: &[u8],
+        api_version: &Version,
+    ) -> Result<Self, DeterministicHostError> {
+        Ok(Self(AscEnum::from_asc_bytes(asc_obj, api_version)?))
+    }
+}
+
+impl AscIndexId for AscOracleResponseCodeEnum {
+    const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoEnumOracleResponseCode;
 }
 
 pub struct AscTransactionAttributeTypeEnum(pub(crate) AscEnum<AscTransactionAttributeType>);
@@ -198,6 +411,53 @@ impl AscIndexId for AscTriggerTypeEnum {
     const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoEnumTriggerType;
 }
 
+#[repr(C)]
+#[derive(AscType)]
+pub(crate) struct AscOnPersist {}
+
+impl AscIndexId for AscOnPersist {
+    const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoOnPersist;
+}
+#[repr(C)]
+#[derive(AscType)]
+pub(crate) struct AscPostPersist {}
+
+impl AscIndexId for AscPostPersist {
+    const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoPostPersist;
+}
+
+#[repr(C)]
+#[derive(AscType)]
+pub(crate) struct AscVerification {}
+
+impl AscIndexId for AscVerification{
+    const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoVerification;
+}
+
+#[repr(C)]
+#[derive(AscType)]
+pub(crate) struct AscApplication {}
+
+impl AscIndexId for AscApplication{
+    const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoApplication;
+}
+
+#[repr(C)]
+#[derive(AscType)]
+pub(crate) struct AscSystem {}
+
+impl AscIndexId for AscSystem{
+    const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoSystem;
+}
+#[repr(C)]
+#[derive(AscType)]
+pub(crate) struct AscAll {}
+
+impl AscIndexId for AscAll{
+    const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoAll;
+}
+
+
 #[repr(u32)]
 #[derive(AscType, Copy, Clone)]
 pub(crate) enum AscVMState {
@@ -233,6 +493,41 @@ impl AscIndexId for AscVMStateEnum {
     const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoEnumVMState;
 }
 
+
+#[repr(C)]
+#[derive(AscType)]
+pub(crate) struct AscNONE {}
+
+impl AscIndexId for AscNONE{
+    const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoNONE;
+}
+
+#[repr(C)]
+#[derive(AscType)]
+pub(crate) struct AscHALT {}
+
+impl AscIndexId for AscHALT{
+    const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoHALT;
+}
+
+#[repr(C)]
+#[derive(AscType)]
+pub(crate) struct AscFAULT {}
+
+impl AscIndexId for AscFAULT{
+    const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoFAULT;
+}
+
+#[repr(C)]
+#[derive(AscType)]
+pub(crate) struct AscBREAK {}
+
+impl AscIndexId for AscBREAK{
+    const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoBREAK;
+}
+
+//=====
+
 #[repr(u32)]
 #[derive(AscType, Copy, Clone)]
 pub(crate) enum AscStackItemType {
@@ -247,6 +542,90 @@ pub(crate) enum AscStackItemType {
     Map,
     InteropInterface,
 }
+
+#[repr(C)]
+#[derive(AscType)]
+pub(crate) struct AscAny {}
+
+impl AscIndexId for AscAny{
+    const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoAny;
+}
+
+
+#[repr(C)]
+#[derive(AscType)]
+pub(crate) struct AscPointer {}
+
+impl AscIndexId for AscPointer{
+    const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoPointer;
+}
+
+#[repr(C)]
+#[derive(AscType)]
+pub(crate) struct AscBoolean {}
+
+impl AscIndexId for AscBoolean{
+    const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoBoolean;
+}
+
+#[repr(C)]
+#[derive(AscType)]
+pub(crate) struct AscInteger {}
+
+impl AscIndexId for AscInteger{
+    const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoInteger;
+}
+
+#[repr(C)]
+#[derive(AscType)]
+pub(crate) struct AscByteString {}
+
+impl AscIndexId for AscByteString{
+    const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoByteString;
+}
+
+#[repr(C)]
+#[derive(AscType)]
+pub(crate) struct AscBuffer {}
+
+impl AscIndexId for AscBuffer{
+    const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoBuffer;
+}
+
+#[repr(C)]
+#[derive(AscType)]
+pub(crate) struct AscArray {}
+
+impl AscIndexId for AscArray{
+    const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoArray;
+}
+
+ 
+
+#[repr(C)]
+#[derive(AscType)]
+pub(crate) struct AscStruct {}
+
+impl AscIndexId for AscStruct{
+    const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoStruct;
+}
+
+#[repr(C)]
+#[derive(AscType)]
+pub(crate) struct AscMap {}
+
+impl AscIndexId for AscMap{
+    const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoMap;
+}
+
+#[repr(C)]
+#[derive(AscType)]
+pub(crate) struct AscInteropInterface {}
+
+impl AscIndexId for AscInteropInterface{
+    const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoInteropInterface;
+}
+
 
 impl AscValue for AscStackItemType {}
 
@@ -317,6 +696,68 @@ impl AscIndexId for AscRpcNotifyEventArgs{
 }
 
 // Array
+
+
+pub struct AscCryptoHashArray(pub(crate) Array<AscPtr<AscCryptoHash>>);
+
+impl AscType for AscCryptoHashArray {
+    fn to_asc_bytes(&self) -> Result<Vec<u8>, DeterministicHostError> {
+        self.0.to_asc_bytes()
+    }
+
+    fn from_asc_bytes(
+        asc_obj: &[u8],
+        api_version: &Version,
+    ) -> Result<Self, DeterministicHostError> {
+        Ok(Self(Array::from_asc_bytes(asc_obj, api_version)?))
+    }
+}
+
+impl AscIndexId for AscCryptoHashArray {
+    const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoArrayCryptoHash;
+}
+
+pub struct AscAccountArray(pub(crate) Array<AscPtr<AscAccount>>);
+
+impl AscType for AscAccountArray {
+    fn to_asc_bytes(&self) -> Result<Vec<u8>, DeterministicHostError> {
+        self.0.to_asc_bytes()
+    }
+
+    fn from_asc_bytes(
+        asc_obj: &[u8],
+        api_version: &Version,
+    ) -> Result<Self, DeterministicHostError> {
+        Ok(Self(Array::from_asc_bytes(asc_obj, api_version)?))
+    }
+}
+
+impl AscIndexId for AscAccountArray {
+    const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoArrayAccount;
+}
+
+pub struct AscAddressArray(pub(crate) Array<AscPtr<AscAddress>>);
+
+impl AscType for AscAddressArray {
+    fn to_asc_bytes(&self) -> Result<Vec<u8>, DeterministicHostError> {
+        self.0.to_asc_bytes()
+    }
+
+    fn from_asc_bytes(
+        asc_obj: &[u8],
+        api_version: &Version,
+    ) -> Result<Self, DeterministicHostError> {
+        Ok(Self(Array::from_asc_bytes(asc_obj, api_version)?))
+    }
+}
+
+impl AscIndexId for AscAddressArray {
+    const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoArrayAddress;
+}
+
+ 
+
+
 pub struct AscRpcNotifyEventArgsArray(pub(crate) Array<AscPtr<AscRpcNotifyEventArgs>>);
 
 impl AscType for AscRpcNotifyEventArgsArray {
@@ -411,25 +852,6 @@ impl AscIndexId for AscTransactionAttributeArray {
     const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoArrayTransactionAttribute;
 }
 
-pub struct AscAddressArray(pub(crate) Array<AscPtr<AscAddress>>);
-
-impl AscType for AscAddressArray {
-    fn to_asc_bytes(&self) -> Result<Vec<u8>, DeterministicHostError> {
-        self.0.to_asc_bytes()
-    }
-
-    fn from_asc_bytes(
-        asc_obj: &[u8],
-        api_version: &Version,
-    ) -> Result<Self, DeterministicHostError> {
-        Ok(Self(Array::from_asc_bytes(asc_obj, api_version)?))
-    }
-}
-
-impl AscIndexId for AscAddressArray {
-    const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoArrayAddress;
-}
-
 pub struct AscPublicKeyArray(pub(crate) Array<AscPtr<AscPublicKey>>);
 
 impl AscType for AscPublicKeyArray {
@@ -448,6 +870,7 @@ impl AscType for AscPublicKeyArray {
 impl AscIndexId for AscPublicKeyArray {
     const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoArrayPublicKey;
 }
+
 
 pub struct AscSignerArray(pub(crate) Array<AscPtr<AscSigner>>);
 
