@@ -21,6 +21,8 @@ pub struct NeoBlockHeader {
     pub time: u64,
     #[prost(uint64, tag = "7")]
     pub nonce: u64,
+    #[prost(uint64, tag = "13")]
+    pub index: u64,
     #[prost(uint64, tag = "8")]
     pub primary: u64,
     #[prost(message, repeated, tag = "9")]

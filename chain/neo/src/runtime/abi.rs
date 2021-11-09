@@ -1,6 +1,6 @@
 use crate::codec; 
-use graph::runtime::{asc_new, AscHeap, AscPtr, DeterministicHostError, ToAscObj,FromAscObj};
-use graph_runtime_wasm::asc_abi::class::{Array, AscAddress, AscEnum, EnumPayload, Uint8Array};
+use graph::runtime::{asc_new, AscHeap, DeterministicHostError, ToAscObj};
+use graph_runtime_wasm::asc_abi::class::{Array, AscAddress, AscEnum, EnumPayload};
 
 pub(crate) use super::generated::*;
 
@@ -29,6 +29,7 @@ impl ToAscObj<AscNeoBlockHeader> for codec::NeoBlockHeader {
             merkle_root: asc_new(heap,self.merkrle_root.as_ref().unwrap())?,
             time: self.time ,
             nonce: self.nonce ,
+            index : self.index,
             primary: self.primary ,
             witnesses: asc_new(heap,&self.witnesses)?,//
             next_consensus: asc_new(heap,self.nextconsensus.as_ref().unwrap())?,

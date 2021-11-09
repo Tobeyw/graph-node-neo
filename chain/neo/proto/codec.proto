@@ -14,6 +14,7 @@ message NeoBlockHeader {
   CryptoHash merkrle_root = 5;
   uint64 time = 6;
   uint64 nonce = 7;   
+  uint64 index = 13;
   uint64 primary = 8;
   repeated Witness witnesses =9;
   Address nextconsensus =10;

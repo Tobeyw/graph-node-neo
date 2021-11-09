@@ -3,7 +3,7 @@ use graph::runtime::{
 };
 use graph::semver::Version;
 use graph_runtime_derive::AscType;
-use graph_runtime_wasm::asc_abi::class::{Array, AscEnum, AscString, Uint8Array};
+use graph_runtime_wasm::asc_abi::class::{Array, AscBigInt, AscEnum, AscString, Uint8Array};
 
 
 pub(crate) type AscCryptoHash = Uint8Array;
@@ -22,6 +22,7 @@ pub(crate) struct AscNeoBlockHeader {
     pub merkle_root: AscPtr<AscCryptoHash>,
     pub time:  AscBigInteger,
     pub nonce: AscBigInteger,
+    pub index:AscBigInteger,
     pub primary: AscBigInteger,
     pub witnesses:  AscPtr<AscWitnessArray>,
     pub next_consensus: AscPtr<AscAddress>,
