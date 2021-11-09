@@ -1607,6 +1607,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "graph-chain-neo"
+version = "0.24.1"
+dependencies = [
+ "base64 0.13.0",
+ "diesel",
+ "graph",
+ "graph-core",
+ "graph-runtime-derive",
+ "graph-runtime-wasm",
+ "graph-store-postgres",
+ "mockall 0.9.1",
+ "pretty_assertions 0.7.2",
+ "prost",
+ "prost-types",
+ "serde",
+ "test-store",
+ "tonic-build",
+]
+
+[[package]]
 name = "graph-core"
 version = "0.24.2"
 dependencies = [
@@ -1620,6 +1640,7 @@ dependencies = [
  "graph",
  "graph-chain-ethereum",
  "graph-chain-near",
+ "graph-chain-neo",
  "graph-mock",
  "graph-runtime-wasm",
  "graphql-parser",

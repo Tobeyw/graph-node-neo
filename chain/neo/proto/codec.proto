@@ -213,3 +213,9 @@ message RpcNotifyEventArgs{
   string event_name = 2;
   StackItem state = 3;  
 }
+
+message RpcApplicationLog{
+  bytes txid = 1;
+  bytes blockhash = 2;
+  repeated Execution executions = 3;
+}

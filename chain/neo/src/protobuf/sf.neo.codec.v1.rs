@@ -396,3 +396,12 @@ pub struct RpcNotifyEventArgs {
     #[prost(message, optional, tag = "3")]
     pub state: ::core::option::Option<StackItem>,
 }
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct RpcApplicationLog {
+    #[prost(bytes = "vec", tag = "1")]
+    pub txid: ::prost::alloc::vec::Vec<u8>,
+    #[prost(bytes = "vec", tag = "2")]
+    pub blockhash: ::prost::alloc::vec::Vec<u8>,
+    #[prost(message, repeated, tag = "3")]
+    pub executions: ::prost::alloc::vec::Vec<Execution>,
+}
