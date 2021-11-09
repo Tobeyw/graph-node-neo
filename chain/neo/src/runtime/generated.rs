@@ -4,6 +4,7 @@ use graph::runtime::{
 use graph::semver::Version;
 use graph_runtime_derive::AscType;
 use graph_runtime_wasm::asc_abi::class::{Array, AscBigInt, AscEnum, AscString, Uint8Array};
+use test_store::execute_subgraph_query;
 
 
 pub(crate) type AscCryptoHash = Uint8Array;
@@ -59,6 +60,16 @@ pub(crate) struct AscNeoTransaction{
 impl AscIndexId for AscNeoTransaction {
     const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoTransaction;
 }
+
+#[repr(C)]
+#[derive(AscType)]
+pub(crate) struct AscRpcApplicationLog{
+
+    pub txid: AscPtr<AscCryptoHash>,
+    pub blockhash: AscPtr<AscCryptoHash>,
+    pub executes: AscPtr<AscExecutionArray>
+}
+
 
 #[repr(C)]
 #[derive(AscType)]
@@ -656,7 +667,7 @@ impl AscIndexId for AscStackItemTypeEnum {
 
 #[repr(C)]
 #[derive(AscType)]
-pub(crate) struct AscExcution{
+pub(crate) struct AscExecution{
     pub trigger: AscPtr<AscTriggerTypeEnum>,
     pub vmstate: AscPtr<AscVMStateEnum>,
     pub gas_consumsed: AscBigInteger,  
@@ -665,9 +676,26 @@ pub(crate) struct AscExcution{
     pub notifify_eventsArgs:AscPtr<AscRpcNotifyEventArgsArray>,
 }
 
-impl AscIndexId for AscExcution {
-    const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoExcution;
+impl AscIndexId for AscExecution {
+    const INDEX_ASC_TYPE_ID: IndexForAscTypeId = IndexForAscTypeId::NeoExecution;
 }
+
+pub struct AscExecutionArray(pub(crate) Array<AscPtr<AscExecution>>);
+
+impl AscType for AscExecutionArray {
+    fn to_asc_bytes(&self) -> Result<Vec<u8>, DeterministicHostError> {
+        self.0.to_asc_bytes()
+    }
+
+    fn from_asc_bytes(
+        asc_obj: &[u8],
+        api_version: &Version,
+    ) -> Result<Self, DeterministicHostError> {
+        Ok(Self(Array::from_asc_bytes(asc_obj, api_version)?))
+    }
+}
+
+
 
 #[repr(C)]
 #[derive(AscType)]

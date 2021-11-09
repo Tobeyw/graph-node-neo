@@ -400,8 +400,8 @@ pub struct RpcNotifyEventArgs {
 pub struct RpcApplicationLog {
     #[prost(bytes = "vec", tag = "1")]
     pub txid: ::prost::alloc::vec::Vec<u8>,
-    #[prost(bytes = "vec", tag = "2")]
-    pub blockhash: ::prost::alloc::vec::Vec<u8>,
+    #[prost(message, optional, tag = "2")]
+    pub blockhash: ::core::option::Option<CryptoHash>,
     #[prost(message, repeated, tag = "3")]
     pub executions: ::prost::alloc::vec::Vec<Execution>,
 }

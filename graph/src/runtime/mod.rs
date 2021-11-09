@@ -256,11 +256,12 @@ pub enum IndexForAscTypeId {
     NeoEnumTriggerType = 113,
     NeoEnumVMState = 114,
     NeoEnumStackItem = 115,
-    NeoExcution = 116,
+    NeoExecution = 116,
     NeoStackItem = 117,
     NeoRpcNotifyEventArgs = 118,
     NeoArrayRpcNotifyEventArgs = 119,
     NeoArrayStackItem = 120,
+    NeoRpcApplicationLog = 121,
 
 }
 
