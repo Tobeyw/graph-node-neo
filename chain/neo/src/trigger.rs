@@ -15,9 +15,31 @@ use std::{cmp::Ordering, sync::Arc};
 use crate::codec::CryptoHash;
 use crate::codec::{NeoBlock, RpcNotifyEventArgs as Event,RpcApplicationLog};
 
+#[derive(Clone)]
 pub enum NeoTrigger {
     Block(Arc<NeoBlock>),
     Receipt(Arc<RpcApplicationLog>),
+}
+
+
+impl CheapClone for NeoTrigger {
+    fn cheap_clone(&self) -> NeoTrigger {
+        match self {
+            NeoTrigger::Block(block) => NeoTrigger::Block(block.cheap_clone()),
+            NeoTrigger::Receipt(receipt) => NeoTrigger::Receipt(receipt.cheap_clone()),
+        }
+    }
+}
+
+impl PartialEq for NeoTrigger {
+    fn eq(&self, other: &Self) -> bool {
+        match (self, other) {
+            (Self::Block(a), Self::Block(b)) => a == b,
+            (Self::Receipt(a), Self::Receipt(b)) => a.txid == b.txid,
+
+            (Self::Block(_), Self::Receipt(_)) | (Self::Receipt(_), Self::Block(_)) => false,
+        }
+    }
 }
 
 impl NeoTrigger {

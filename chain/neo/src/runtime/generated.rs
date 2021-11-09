@@ -4,7 +4,7 @@ use graph::runtime::{
 use graph::semver::Version;
 use graph_runtime_derive::AscType;
 use graph_runtime_wasm::asc_abi::class::{Array, AscBigInt, AscEnum, AscString, Uint8Array};
-use test_store::execute_subgraph_query;
+//use test_store::execute_subgraph_query;
 
 
 pub(crate) type AscCryptoHash = Uint8Array;
