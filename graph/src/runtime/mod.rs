@@ -239,7 +239,7 @@ pub enum IndexForAscTypeId {
     NearBlock = 85,
     NearReceiptWithOutcome = 86,
 
-    // Neo Type IDs
+    // Neo Type IDs /    
     NeoBlock = 100,
     NeoWitness = 101,
     NeoSigner = 102,
@@ -302,7 +302,7 @@ pub enum IndexForAscTypeId {
     NeoContentTypeNotSupported = 159,
     NeoError = 160,
     NeoForbidden = 161,
-    NeoEnumWitnessScope=162
+    NeoEnumWitnessScope=162,
 
 }
 
