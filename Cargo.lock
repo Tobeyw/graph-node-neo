@@ -1523,7 +1523,7 @@ dependencies = [
  "petgraph 0.6.0",
  "priority-queue",
  "prometheus",
- "prost",
+ "prost 0.11.6",
  "prost-types",
  "rand 0.6.5",
  "reqwest",
@@ -1576,7 +1576,7 @@ dependencies = [
  "lazy_static",
  "mockall 0.9.1",
  "pretty_assertions 1.0.0",
- "prost",
+ "prost 0.11.6",
  "prost-types",
  "semver 1.0.4",
  "serde",
@@ -1599,7 +1599,7 @@ dependencies = [
  "graph-runtime-wasm",
  "graph-store-postgres",
  "pretty_assertions 0.7.2",
- "prost",
+ "prost 0.8.0",
  "prost-types",
  "serde",
  "test-store",
@@ -1619,7 +1619,7 @@ dependencies = [
  "graph-store-postgres",
  "mockall 0.9.1",
  "pretty_assertions 0.7.2",
- "prost",
+ "prost 0.8.0",
  "prost-types",
  "serde",
  "test-store",
@@ -3348,7 +3348,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "de5e2533f59d08fcf364fd374ebda0692a70bd6d7e66ef97f306f45c6c5d8020"
 dependencies = [
  "bytes 1.0.1",
- "prost-derive",
+ "prost-derive 0.8.0",
+]
+
+[[package]]
+name = "prost"
+version = "0.11.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "21dc42e00223fc37204bd4aa177e69420c604ca4a183209a8f9de30c6d934698"
+dependencies = [
+ "bytes 1.0.1",
+ "prost-derive 0.11.6",
 ]
 
 [[package]]
@@ -3363,7 +3373,7 @@ dependencies = [
  "log 0.4.14",
  "multimap",
  "petgraph 0.5.1",
- "prost",
+ "prost 0.8.0",
  "prost-types",
  "tempfile",
  "which",
@@ -3383,13 +3393,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "prost-derive"
+version = "0.11.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8bda8c0881ea9f722eb9629376db3d0b903b462477c1aafcb0566610ac28ac5d"
+dependencies = [
+ "anyhow",
+ "itertools",
+ "proc-macro2 1.0.28",
+ "quote 1.0.9",
+ "syn 1.0.74",
+]
+
+[[package]]
 name = "prost-types"
 version = "0.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "603bbd6394701d13f3f25aada59c7de9d35a6a5887cfc156181234a44002771b"
 dependencies = [
  "bytes 1.0.1",
- "prost",
+ "prost 0.8.0",
 ]
 
 [[package]]
@@ -5056,8 +5079,8 @@ dependencies = [
  "hyper-timeout",
  "percent-encoding 2.1.0",
  "pin-project",
- "prost",
- "prost-derive",
+ "prost 0.8.0",
+ "prost-derive 0.8.0",
  "rustls-native-certs",
  "tokio 1.12.0",
  "tokio-rustls",
